@@ -59,11 +59,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <div className="border-t border-sidebar-border px-4 py-4 shrink-0">
           <div className="flex items-center gap-3">
             <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary shrink-0">
-              AM
+              AH
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">Alex Manager</p>
-              <p className="text-[11px] text-sidebar-foreground/50 truncate">Area Director</p>
+              <p className="text-sm font-medium text-sidebar-foreground truncate">Operations</p>
+              <p className="text-[11px] text-sidebar-foreground/50 truncate">Azzurro Hotels</p>
             </div>
           </div>
         </div>
