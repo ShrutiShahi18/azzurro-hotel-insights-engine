@@ -23,8 +23,8 @@ router.get("/reviews", async (req, res): Promise<void> => {
   if (hotelId != null) conditions.push(eq(reviewsTable.hotelId, hotelId));
   if (sentiment) conditions.push(eq(reviewsTable.sentiment, sentiment));
   if (search) conditions.push(ilike(reviewsTable.text, `%${search}%`));
-  if (dateFrom) conditions.push(gte(reviewsTable.reviewDate, dateFrom));
-  if (dateTo) conditions.push(lte(reviewsTable.reviewDate, dateTo));
+  if (dateFrom) conditions.push(gte(reviewsTable.reviewDate, dateFrom instanceof Date ? dateFrom.toISOString().split("T")[0] : dateFrom));
+  if (dateTo) conditions.push(lte(reviewsTable.reviewDate, dateTo instanceof Date ? dateTo.toISOString().split("T")[0] : dateTo));
 
   const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 

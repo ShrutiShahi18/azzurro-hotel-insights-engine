@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer 
 } from "recharts";
-import { Star, MapPin, ArrowLeft, MessageSquare, TrendingUp, Users } from "lucide-react";
+import { Star, MapPin, ArrowLeft, MessageSquare, TrendingUp, Users, ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 
 export default function HotelDetail() {
@@ -188,10 +188,8 @@ export default function HotelDetail() {
       </Card>
       
       <div className="pt-6">
-        <Link href={`/reviews?hotelId=${hotel.id}`}>
-          <a className="inline-flex items-center text-primary font-medium hover:underline">
-            View all reviews for this property <ArrowRight className="ml-1 h-4 w-4" />
-          </a>
+        <Link href={`/reviews?hotelId=${hotel.id}`} className="inline-flex items-center text-primary font-medium hover:underline">
+          View all reviews for this property <ArrowRight className="ml-1 h-4 w-4" />
         </Link>
       </div>
     </div>

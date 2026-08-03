@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, Search, Filter, Calendar as CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, Search, Filter, Calendar as CalendarIcon, ChevronLeft, ChevronRight, MessageSquare } from "lucide-react";
 
 export default function Reviews() {
   const [page, setPage] = useState(1);

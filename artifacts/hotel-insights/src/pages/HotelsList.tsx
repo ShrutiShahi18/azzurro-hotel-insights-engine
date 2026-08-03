@@ -58,11 +58,11 @@ export default function HotelsList() {
               </p>
             </CardContent>
             <CardFooter className="flex flex-col sm:flex-row gap-3 border-t bg-muted/20 pt-4">
-              <Link href={`/hotels/${hotel.id}`} className="w-full">
-                <Button className="w-full group/btn">
+              <Button className="w-full group/btn" asChild>
+                <Link href={`/hotels/${hotel.id}`} className="w-full">
                   View Insights <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
               <Button variant="outline" className="w-full" asChild>
                 <a href={hotel.bookingUrl} target="_blank" rel="noopener noreferrer">
                   Booking.com <ExternalLink className="ml-2 h-3.5 w-3.5" />
