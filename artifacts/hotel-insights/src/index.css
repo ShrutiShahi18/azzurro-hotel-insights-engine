@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+/* Azzurro Hotels — Poppins typeface */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -50,108 +51,125 @@
   --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  /* Azzurro: Poppins for all UI copy, JetBrains Mono for metrics */
+  --font-sans: 'Poppins', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);
-  --radius-lg: calc(var(--radius) + 2px);
+  --radius-lg: calc(var(--radius) + 4px);
 }
 
+/* ── AZZURRO LIGHT THEME ─────────────────────────────────────────────────────
+   Primary palette sourced from azzurrohotels.com:
+     Navy   #0F2A4D  →  215 67% 18%
+     Cream  #FAF8F4  →   40 50% 97%
+     Crimson #E01858 →  344 80% 49%
+     Sand   #E8DCC4  →   38 42% 84%
+──────────────────────────────────────────────────────────────────────────── */
 :root {
-  --background: 210 20% 98%;
-  --foreground: 222 47% 11%;
-  
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 221 83% 53%;
+  /* Page background — warm Azzurro cream */
+  --background: 40 30% 96%;
+  --foreground: 215 67% 18%;
 
+  --border: 38 22% 87%;
+  --input: 38 22% 87%;
+  --ring: 344 80% 49%;
+
+  /* Cards sit on slightly brighter white against the cream page */
   --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --card-border: 214 32% 91%;
+  --card-foreground: 215 67% 18%;
+  --card-border: 38 22% 90%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  --popover-border: 214 32% 91%;
+  --popover-foreground: 215 67% 18%;
+  --popover-border: 38 22% 87%;
 
-  --primary: 221 83% 53%;
-  --primary-foreground: 210 40% 98%;
+  /* Crimson primary — Azzurro CTA colour */
+  --primary: 344 80% 49%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 214 32% 91%;
-  --secondary-foreground: 222 47% 11%;
+  /* Warm sand secondary */
+  --secondary: 38 42% 84%;
+  --secondary-foreground: 215 67% 18%;
 
-  --muted: 210 40% 96%;
-  --muted-foreground: 215.4 16.3% 46.9%;
+  /* Soft warm muted tones */
+  --muted: 38 30% 93%;
+  --muted-foreground: 215 25% 45%;
 
-  --accent: 210 40% 96%;
-  --accent-foreground: 222.2 47.4% 11.2%;
+  --accent: 38 42% 88%;
+  --accent-foreground: 215 67% 18%;
 
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
+  --destructive: 0 84% 57%;
+  --destructive-foreground: 0 0% 100%;
 
-  --chart-1: 221 83% 53%; /* Blue */
-  --chart-2: 160 84% 39%; /* Green */
-  --chart-3: 45 93% 50%; /* Yellow/Orange */
-  --chart-4: 0 84% 60%; /* Red */
-  --chart-5: 280 65% 60%; /* Purple */
+  /* Chart palette derived from Azzurro brand energy */
+  --chart-1: 344 80% 49%;  /* Crimson  — primary metric  */
+  --chart-2: 168 72% 38%;  /* Teal     — positive/growth */
+  --chart-3: 38 88% 52%;   /* Amber    — neutral/caution */
+  --chart-4: 8 80% 57%;    /* Coral    — negative/alert  */
+  --chart-5: 215 67% 45%;  /* Navy     — secondary line  */
 
-  --sidebar: 0 0% 100%;
-  --sidebar-foreground: 222 47% 11%;
-  --sidebar-border: 214 32% 91%;
-  --sidebar-primary: 221 83% 53%;
+  /* Sidebar — Azzurro midnight navy */
+  --sidebar: 215 67% 18%;
+  --sidebar-foreground: 38 40% 94%;
+  --sidebar-border: 215 50% 24%;
+  --sidebar-primary: 344 80% 49%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 210 40% 96%;
-  --sidebar-accent-foreground: 222 47% 11%;
-  --sidebar-ring: 221 83% 53%;
+  --sidebar-accent: 215 52% 26%;
+  --sidebar-accent-foreground: 38 40% 94%;
+  --sidebar-ring: 344 80% 49%;
 
-  --radius: 0.5rem;
+  /* Sharp Azzurro aesthetic — minimal rounding on cards */
+  --radius: 0.25rem;
 }
 
+/* Dark mode keeps the navy sidebar feel while darkening content surfaces */
 .dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 212.7 26.8% 83.9%;
+  --background: 215 67% 10%;
+  --foreground: 38 40% 94%;
 
-  --card: 222 47% 11%;
-  --card-foreground: 210 40% 98%;
-  --card-border: 217.2 32.6% 17.5%;
+  --border: 215 40% 20%;
+  --input: 215 40% 20%;
+  --ring: 344 80% 49%;
 
-  --popover: 222 47% 11%;
-  --popover-foreground: 210 40% 98%;
-  --popover-border: 217.2 32.6% 17.5%;
+  --card: 215 60% 14%;
+  --card-foreground: 38 40% 94%;
+  --card-border: 215 40% 22%;
 
-  --primary: 210 40% 98%;
-  --primary-foreground: 222.2 47.4% 11.2%;
+  --popover: 215 60% 14%;
+  --popover-foreground: 38 40% 94%;
+  --popover-border: 215 40% 22%;
 
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
+  --primary: 344 80% 55%;
+  --primary-foreground: 0 0% 100%;
 
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
+  --secondary: 215 50% 22%;
+  --secondary-foreground: 38 40% 94%;
 
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
+  --muted: 215 45% 18%;
+  --muted-foreground: 38 25% 65%;
 
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
+  --accent: 215 50% 22%;
+  --accent-foreground: 38 40% 94%;
 
-  --chart-1: 221 83% 53%;
-  --chart-2: 160 84% 39%;
-  --chart-3: 45 93% 50%;
-  --chart-4: 0 84% 60%;
-  --chart-5: 280 65% 60%;
+  --destructive: 0 62% 45%;
+  --destructive-foreground: 0 0% 100%;
 
-  --sidebar: 222 47% 11%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-border: 217.2 32.6% 17.5%;
-  --sidebar-primary: 221 83% 53%;
+  --chart-1: 344 80% 55%;
+  --chart-2: 168 72% 44%;
+  --chart-3: 38 88% 56%;
+  --chart-4: 8 80% 62%;
+  --chart-5: 215 67% 55%;
+
+  --sidebar: 215 70% 13%;
+  --sidebar-foreground: 38 40% 94%;
+  --sidebar-border: 215 50% 20%;
+  --sidebar-primary: 344 80% 55%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 217.2 32.6% 17.5%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-ring: 212.7 26.8% 83.9%;
+  --sidebar-accent: 215 55% 20%;
+  --sidebar-accent-foreground: 38 40% 94%;
+  --sidebar-ring: 344 80% 55%;
 }
 
 @layer base {
@@ -160,5 +178,10 @@
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+  /* Poppins-tuned heading weights */
+  h1, h2, h3, h4 {
+    font-weight: 600;
+    letter-spacing: -0.01em;
   }
 }
