@@ -13,7 +13,7 @@
 
 A complete walkthrough of the application is available here:
 
-[▶️ Watch the Demo Video](./Hotel%20Review%20Insights%20-%20Azzurro.mp4)s
+[▶️ Watch the Demo Video](./Hotel%20Review%20Insights%20-%20Azzurro.mp4)
 
 ## What is AzzurroIQ?
 
