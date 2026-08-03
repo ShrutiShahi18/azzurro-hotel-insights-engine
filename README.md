@@ -9,6 +9,11 @@
 ![OpenAI](https://img.shields.io/badge/OpenAI-GPT_Insights-412991?style=flat&logo=openai&logoColor=white)
 
 ---
+## 🎥 Live Demo Video
+
+A complete walkthrough of the application is available here:
+
+[▶️ Watch the Demo Video](./Hotel%20Review%20Insights%20-%20Azzurro.mp4)s
 
 ## What is AzzurroIQ?
 
