@@ -15,5 +15,6 @@
     {
       "path": "../../lib/api-zod"
     }
-  ]
+  ],
+  "exclude": ["node_modules", "dist"]
 }

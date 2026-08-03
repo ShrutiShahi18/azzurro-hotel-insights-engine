@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Hotel Review Insights"
+description = "A hotel operations dashboard for hotel managers to monitor and analyse Booking.com reviews across four Sydney hotel properties. Provides KPI cards, trend charts, sentiment analysis, AI-powered insights, and a searchable review feed."
+version = "1.0.0"
+id = "artifacts/hotel-insights"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 20187
+
+[services.development]
+run = "pnpm --filter @workspace/hotel-insights run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/hotel-insights", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/hotel-insights/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "20187"
+BASE_PATH = "/"

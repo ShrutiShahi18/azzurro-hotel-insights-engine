@@ -1,0 +1,255 @@
+You are a Senior Full Stack Engineer.
+
+I want to build a completely new implementation of this project from scratch using MY preferred tech stack.
+
+This is NOT a learning project and NOT a simplified clone.
+
+It should be production-quality, clean, scalable, interview-ready, and suitable as a portfolio project.
+
+Do not reuse the architecture from my existing implementation unless it genuinely improves this one.
+
+====================================================
+
+PROJECT
+
+Booking.com Review Insights Dashboard
+
+The application should help hotel managers monitor and analyse Booking.com reviews across four hotel properties.
+
+Managers should be able to answer questions like:
+
+• Which hotel is performing best?
+• Which hotel needs attention?
+• What are guests complaining about?
+• Which trends are increasing?
+• Which operational issues should management address?
+
+====================================================
+
+TECH STACK
+
+Frontend
+
+• React
+• Vite
+• TypeScript
+• Tailwind CSS
+• React Router
+• Axios
+• Recharts
+• shadcn/ui
+
+Backend
+
+• Node.js
+• Express.js
+• TypeScript
+
+Database
+
+• MongoDB Atlas
+• Mongoose
+
+Authentication
+
+• JWT
+
+AI
+
+• OpenAI API
+
+Deployment
+
+Frontend → Vercel
+
+Backend → Render
+
+Database → MongoDB Atlas
+
+====================================================
+
+FEATURES
+
+1. Review Collection
+
+Design a review collection service.
+
+Store:
+
+• Review
+• Rating
+• Hotel
+• Review Date
+• Reviewer
+• Metadata
+
+Prevent duplicates.
+
+Support future incremental updates.
+
+Handle failures gracefully.
+
+Document limitations.
+
+If live Booking.com scraping is blocked because of anti-bot protections, implement a clean fallback and document it.
+
+====================================================
+
+2. Dashboard
+
+Create an operations dashboard.
+
+Include:
+
+Dashboard Cards
+
+• Average Rating
+• Weekly Rating Change
+• Total Reviews
+• Positive Review Percentage
+
+Charts
+
+• Rating Trend
+• Hotel Comparison
+• Sentiment Distribution
+• Complaint Categories
+
+Review Feed
+
+• Search
+• Filters
+• Date Range
+• Hotel Filter
+• Pagination
+
+====================================================
+
+3. AI
+
+Analyse reviews using OpenAI.
+
+Generate:
+
+• Sentiment
+• Topic Classification
+• Weekly Summary
+• Business Recommendations
+
+Examples:
+
+"42% of negative reviews mention cleanliness."
+
+"Reception complaints increased by 18%."
+
+====================================================
+
+BACKEND STRUCTURE
+
+server/
+
+config/
+
+models/
+
+controllers/
+
+routes/
+
+middlewares/
+
+services/
+
+utils/
+
+====================================================
+
+FRONTEND STRUCTURE
+
+client/
+
+components/
+
+pages/
+
+hooks/
+
+services/
+
+context/
+
+types/
+
+utils/
+
+====================================================
+
+DATABASE MODELS
+
+Hotel
+
+Review
+
+Insight
+
+====================================================
+
+API ENDPOINTS
+
+GET /reviews
+
+GET /analytics
+
+GET /insights
+
+POST /reviews/import
+
+POST /reviews/analyse
+
+====================================================
+
+REQUIREMENTS
+
+Use clean REST APIs.
+
+Use reusable React components.
+
+Keep the folder structure simple.
+
+Avoid unnecessary abstractions.
+
+Write production-quality but readable code.
+
+Add comments only where they improve understanding.
+
+====================================================
+
+WORKFLOW
+
+Do not generate the whole project in one response.
+
+Work milestone by milestone.
+
+For every milestone:
+
+• Explain the architecture.
+• Explain why this approach was chosen.
+• Generate the code.
+• Explain the request flow.
+• Explain the database flow.
+• Explain how I should describe this implementation in an interview.
+
+After every milestone, generate:
+
+• A short engineering summary.
+• Possible interviewer questions.
+• Suggested answers.
+
+At the end, generate:
+
+• README
+• Deployment guide
+• Environment variables
+• API documentation
+• Folder structure
+• Future improvements

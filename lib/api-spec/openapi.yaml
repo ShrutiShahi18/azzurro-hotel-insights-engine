@@ -3,13 +3,22 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Hotel Review Insights API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: hotels
+    description: Hotel property operations
+  - name: reviews
+    description: Review operations
+  - name: analytics
+    description: Analytics operations
+  - name: insights
+    description: AI-powered insight operations
+
 paths:
   /healthz:
     get:
@@ -24,13 +33,525 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /hotels:
+    get:
+      operationId: listHotels
+      tags: [hotels]
+      summary: List all hotel properties
+      responses:
+        "200":
+          description: List of hotels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Hotel"
+
+  /hotels/{id}:
+    get:
+      operationId: getHotel
+      tags: [hotels]
+      summary: Get hotel by ID with aggregated stats
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Hotel with stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HotelWithStats"
+        "404":
+          description: Hotel not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /reviews:
+    get:
+      operationId: listReviews
+      tags: [reviews]
+      summary: List reviews with filtering and pagination
+      parameters:
+        - name: hotelId
+          in: query
+          schema:
+            type: integer
+        - name: sentiment
+          in: query
+          schema:
+            type: string
+            enum: [positive, neutral, negative]
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Paginated reviews
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewPage"
+
+  /reviews/{id}:
+    get:
+      operationId: getReview
+      tags: [reviews]
+      summary: Get a single review
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Review detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+        "404":
+          description: Review not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /reviews/import:
+    post:
+      operationId: importReviews
+      tags: [reviews]
+      summary: Seed or import reviews for a hotel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewImportInput"
+      responses:
+        "200":
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportResult"
+
+  /analytics/overview:
+    get:
+      operationId: getAnalyticsOverview
+      tags: [analytics]
+      summary: Dashboard KPI cards — avg rating, weekly change, total reviews, positive %
+      parameters:
+        - name: hotelId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Overview metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsOverview"
+
+  /analytics/rating-trend:
+    get:
+      operationId: getRatingTrend
+      tags: [analytics]
+      summary: Monthly average ratings per hotel over time
+      parameters:
+        - name: hotelId
+          in: query
+          schema:
+            type: integer
+        - name: months
+          in: query
+          schema:
+            type: integer
+            default: 12
+      responses:
+        "200":
+          description: Rating trend data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RatingTrendPoint"
+
+  /analytics/hotel-comparison:
+    get:
+      operationId: getHotelComparison
+      tags: [analytics]
+      summary: Side-by-side hotel performance comparison
+      responses:
+        "200":
+          description: Hotel comparison
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HotelComparison"
+
+  /analytics/sentiment-distribution:
+    get:
+      operationId: getSentimentDistribution
+      tags: [analytics]
+      summary: Positive, neutral, negative review counts per hotel
+      parameters:
+        - name: hotelId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Sentiment distribution
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SentimentCount"
+
+  /analytics/complaint-categories:
+    get:
+      operationId: getComplaintCategories
+      tags: [analytics]
+      summary: Complaint topic category counts
+      parameters:
+        - name: hotelId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Complaint categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ComplaintCategory"
+
+  /insights:
+    get:
+      operationId: listInsights
+      tags: [insights]
+      summary: List AI-generated insights
+      parameters:
+        - name: hotelId
+          in: query
+          schema:
+            type: integer
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [summary, recommendation, trend_alert]
+      responses:
+        "200":
+          description: List of insights
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Insight"
+
+  /insights/generate:
+    post:
+      operationId: generateInsights
+      tags: [insights]
+      summary: Trigger AI analysis and generate insights for a hotel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InsightGenerateInput"
+      responses:
+        "200":
+          description: Generated insights
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Insight"
+
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required:
-        - status
 
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    Hotel:
+      type: object
+      required: [id, name, slug, location, bookingUrl, createdAt]
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        slug:
+          type: string
+        location:
+          type: string
+        bookingUrl:
+          type: string
+        description:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    HotelWithStats:
+      type: object
+      required: [id, name, slug, location, bookingUrl, createdAt, averageRating, totalReviews, positivePercent, weeklyRatingChange]
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        slug:
+          type: string
+        location:
+          type: string
+        bookingUrl:
+          type: string
+        description:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+        averageRating:
+          type: number
+        totalReviews:
+          type: number
+        positivePercent:
+          type: number
+        weeklyRatingChange:
+          type: number
+
+    Review:
+      type: object
+      required: [id, hotelId, hotelName, reviewerName, rating, sentiment, text, reviewDate, createdAt]
+      properties:
+        id:
+          type: number
+        hotelId:
+          type: number
+        hotelName:
+          type: string
+        reviewerName:
+          type: string
+        reviewerCountry:
+          type: ["string", "null"]
+        rating:
+          type: number
+        sentiment:
+          type: string
+          enum: [positive, neutral, negative]
+        text:
+          type: string
+        positives:
+          type: ["string", "null"]
+        negatives:
+          type: ["string", "null"]
+        stayType:
+          type: ["string", "null"]
+        topics:
+          type: array
+          items:
+            type: string
+        reviewDate:
+          type: string
+          format: date
+        createdAt:
+          type: string
+          format: date-time
+
+    ReviewPage:
+      type: object
+      required: [reviews, total, page, pageSize, totalPages]
+      properties:
+        reviews:
+          type: array
+          items:
+            $ref: "#/components/schemas/Review"
+        total:
+          type: number
+        page:
+          type: number
+        pageSize:
+          type: number
+        totalPages:
+          type: number
+
+    ReviewImportInput:
+      type: object
+      required: [hotelId]
+      properties:
+        hotelId:
+          type: number
+        count:
+          type: number
+          default: 50
+
+    ImportResult:
+      type: object
+      required: [inserted, skipped, total]
+      properties:
+        inserted:
+          type: number
+        skipped:
+          type: number
+        total:
+          type: number
+
+    AnalyticsOverview:
+      type: object
+      required: [averageRating, weeklyRatingChange, totalReviews, positivePercent, neutralPercent, negativePercent]
+      properties:
+        averageRating:
+          type: number
+        weeklyRatingChange:
+          type: number
+        totalReviews:
+          type: number
+        positivePercent:
+          type: number
+        neutralPercent:
+          type: number
+        negativePercent:
+          type: number
+
+    RatingTrendPoint:
+      type: object
+      required: [month, hotelId, hotelName, averageRating, reviewCount]
+      properties:
+        month:
+          type: string
+        hotelId:
+          type: number
+        hotelName:
+          type: string
+        averageRating:
+          type: number
+        reviewCount:
+          type: number
+
+    HotelComparison:
+      type: object
+      required: [hotelId, hotelName, averageRating, totalReviews, positivePercent, responseRate]
+      properties:
+        hotelId:
+          type: number
+        hotelName:
+          type: string
+        averageRating:
+          type: number
+        totalReviews:
+          type: number
+        positivePercent:
+          type: number
+        responseRate:
+          type: number
+
+    SentimentCount:
+      type: object
+      required: [hotelId, hotelName, positive, neutral, negative]
+      properties:
+        hotelId:
+          type: number
+        hotelName:
+          type: string
+        positive:
+          type: number
+        neutral:
+          type: number
+        negative:
+          type: number
+
+    ComplaintCategory:
+      type: object
+      required: [category, count, percent]
+      properties:
+        category:
+          type: string
+        count:
+          type: number
+        percent:
+          type: number
+        hotelId:
+          type: ["number", "null"]
+
+    Insight:
+      type: object
+      required: [id, hotelId, hotelName, type, title, content, createdAt]
+      properties:
+        id:
+          type: number
+        hotelId:
+          type: number
+        hotelName:
+          type: string
+        type:
+          type: string
+          enum: [summary, recommendation, trend_alert]
+        title:
+          type: string
+        content:
+          type: string
+        metric:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    InsightGenerateInput:
+      type: object
+      required: [hotelId]
+      properties:
+        hotelId:
+          type: number
