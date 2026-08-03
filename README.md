@@ -214,6 +214,90 @@ After reviews are collected, `POST /api/insights/generate` feeds up to 30 review
 
 ---
 
+## Sample Data
+
+### Hotels
+
+| ID | Name | Location |
+|---|---|---|
+| 1 | Olympic Hotel Paddington | Paddington, Sydney |
+| 2 | Venus Potts Point | Potts Point, Sydney |
+| 3 | Venus Surry Hills | Surry Hills, Sydney |
+| 4 | Chateau de Venus | Darling Harbour, Sydney |
+
+### Sample reviews
+
+```json
+{
+  "hotelName": "Chateau de Venus",
+  "reviewerName": "Emma L.",
+  "reviewerCountry": "France",
+  "rating": 9.2,
+  "sentiment": "positive",
+  "stayType": "Couple",
+  "reviewDate": "2026-03-14",
+  "text": "Spectacular Darling Harbour views from our room. The waterfront location makes this hotel extraordinary. Excellent service throughout.",
+  "positives": "Harbour views, waterfront location, service",
+  "negatives": null,
+  "topics": ["view", "location", "service"]
+}
+```
+
+```json
+{
+  "hotelName": "Venus Surry Hills",
+  "reviewerName": "Tom H.",
+  "reviewerCountry": "United States",
+  "rating": 2.3,
+  "sentiment": "negative",
+  "stayType": "Business trip",
+  "reviewDate": "2025-11-02",
+  "text": "Arrived to find our room hadn't been cleaned from the previous guest — bed was unmade, used towels on floor. Unacceptable.",
+  "positives": null,
+  "negatives": "Room not cleaned, unhygienic conditions",
+  "topics": ["cleanliness", "housekeeping", "hygiene", "room preparation"]
+}
+```
+
+```json
+{
+  "hotelName": "Olympic Hotel Paddington",
+  "reviewerName": "Priya S.",
+  "reviewerCountry": "India",
+  "rating": 6.1,
+  "sentiment": "neutral",
+  "stayType": "Solo traveller",
+  "reviewDate": "2026-01-19",
+  "text": "Decent hotel in a convenient location. Nothing particularly stood out — rooms were clean enough, staff were fine, breakfast was average.",
+  "positives": "Location, value",
+  "negatives": "Nothing exceptional",
+  "topics": ["location", "value", "cleanliness"]
+}
+```
+
+### Sample AI insight
+
+```json
+{
+  "hotelName": "Chateau de Venus",
+  "type": "recommendation",
+  "title": "Maintain Service Consistency to Protect Premium Positioning",
+  "content": "75% of guests rate their stay positively with an average of 8.4/10. Top praised areas are harbour views and service. However, 13% of reviews flag slow restaurant service and misleading room descriptions — address these two areas to protect the premium brand perception.",
+  "metric": "8.4/10 avg rating"
+}
+```
+
+### Sentiment distribution across all 4 hotels
+
+| Hotel | Positive | Neutral | Negative |
+|---|---|---|---|
+| Olympic Hotel Paddington | 62% | 18% | 20% |
+| Venus Potts Point | 70% | 16% | 14% |
+| Venus Surry Hills | 58% | 20% | 22% |
+| Chateau de Venus | 75% | 12% | 13% |
+
+---
+
 ## API Reference
 
 | Method | Endpoint | Description |
