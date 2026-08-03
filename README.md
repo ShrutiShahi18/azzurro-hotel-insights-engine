@@ -9,12 +9,9 @@
 ![OpenAI](https://img.shields.io/badge/OpenAI-GPT_Insights-412991?style=flat&logo=openai&logoColor=white)
 
 ---
-## 🎥 Live Demo Video
+## 🎥 Demo Video
 
-A complete walkthrough of the application is available here:
-
-[▶️ Watch the Demo Video](./Hotel%20Review%20Insights%20-%20Azzurro.mp4)
-
+https://github.com/ShrutiShahi18/azzurro-hotel-insights-engine/blob/main/Hotel%20Review%20Insights%20-%20Azzurro.mp4
 ## What is AzzurroIQ?
 
 AzzurroIQ helps hotel operations teams stop reading reviews one by one. It aggregates guest feedback across all 4 Azzurro Hotels properties, runs AI analysis on the data, and surfaces the insights that actually matter — rating trends, sentiment shifts, recurring complaints, and actionable recommendations — all in one place.
