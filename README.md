@@ -37,32 +37,7 @@ AzzurroIQ helps hotel operations teams stop reading reviews one by one. It aggre
 
 ## Architecture Overview
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Browser (React + Vite)                   │
-│  ┌──────────┐  ┌──────────────┐  ┌────────────┐  ┌──────────┐  │
-│  │Dashboard │  │Reviews Feed  │  │  Property  │  │Insights  │  │
-│  │(overview)│  │(paginated)   │  │  Drilldown │  │  Panel   │  │
-│  └────┬─────┘  └──────┬───────┘  └─────┬──────┘  └────┬─────┘  │
-│       └───────────────┴────────────────┴───────────────┘        │
-│                    React Query hooks (auto-generated)            │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │ HTTP / REST
-┌──────────────────────────────▼──────────────────────────────────┐
-│                    Express 5 API Server                         │
-│  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌───────────────┐  │
-│  │ /hotels  │  │ /reviews │  │/analytics │  │  /insights    │  │
-│  └──────────┘  └──────────┘  └───────────┘  └───────┬───────┘  │
-│                           Zod validation              │          │
-│                           Drizzle ORM                 │ OpenAI  │
-└──────────────────────────────┬────────────────────────┼─────────┘
-                               │                        │
-              ┌────────────────▼───────┐    ┌───────────▼──────────┐
-              │      PostgreSQL        │    │  OpenAI API           │
-              │  hotels / reviews /    │    │  (GPT insight gen     │
-              │  insights tables       │    │   with fallback)      │
-              └────────────────────────┘    └──────────────────────┘
-```
+![Architecture diagram](docs/architecture.svg)
 
 ### Monorepo layout
 
