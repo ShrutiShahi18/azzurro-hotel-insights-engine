@@ -21,10 +21,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <div className="flex h-16 items-center gap-3 px-6 border-b border-sidebar-border shrink-0">
           {/* Azzurro-style pill dot accent */}
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white text-xs font-bold shrink-0">
-            R
+            A
           </span>
           <span className="text-base font-semibold tracking-tight text-sidebar-foreground">
-            Review<span className="text-primary font-bold">IQ</span>
+            Azzurro<span className="text-primary font-bold">IQ</span>
           </span>
         </div>
 
@@ -74,10 +74,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-sidebar text-sidebar-foreground px-5 lg:hidden">
           <div className="flex items-center gap-2">
             <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white text-[10px] font-bold">
-              R
+              A
             </span>
             <span className="text-sm font-semibold">
-              Review<span className="text-primary font-bold">IQ</span>
+              Azzurro<span className="text-primary font-bold">IQ</span>
             </span>
           </div>
           {/* Minimal mobile nav — show icons only */}
