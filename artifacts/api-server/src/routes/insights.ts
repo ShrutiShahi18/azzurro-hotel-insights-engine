@@ -22,23 +22,28 @@ router.get("/insights", async (req, res): Promise<void> => {
   if (hotelId != null) conditions.push(eq(insightsTable.hotelId, hotelId));
   if (type) conditions.push(eq(insightsTable.type, type));
 
-  const rows = await db
-    .select({
-      id: insightsTable.id,
-      hotelId: insightsTable.hotelId,
-      hotelName: hotelsTable.name,
-      type: insightsTable.type,
-      title: insightsTable.title,
-      content: insightsTable.content,
-      metric: insightsTable.metric,
-      createdAt: insightsTable.createdAt,
-    })
-    .from(insightsTable)
-    .innerJoin(hotelsTable, eq(insightsTable.hotelId, hotelsTable.id))
-    .where(conditions.length > 0 ? and(...conditions) : undefined)
-    .orderBy(desc(insightsTable.createdAt));
+  try {
+    const rows = await db
+      .select({
+        id: insightsTable.id,
+        hotelId: insightsTable.hotelId,
+        hotelName: hotelsTable.name,
+        type: insightsTable.type,
+        title: insightsTable.title,
+        content: insightsTable.content,
+        metric: insightsTable.metric,
+        createdAt: insightsTable.createdAt,
+      })
+      .from(insightsTable)
+      .innerJoin(hotelsTable, eq(insightsTable.hotelId, hotelsTable.id))
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(insightsTable.createdAt));
 
-  res.json(rows);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch insights", code: "DB_ERROR" });
+    throw err;
+  }
 });
 
 router.post("/insights/generate", async (req, res): Promise<void> => {
@@ -50,37 +55,42 @@ router.post("/insights/generate", async (req, res): Promise<void> => {
 
   const { hotelId } = parsed.data;
 
-  const hotel = await db
-    .select()
-    .from(hotelsTable)
-    .where(eq(hotelsTable.id, hotelId))
-    .limit(1);
+  try {
+    const hotel = await db
+      .select()
+      .from(hotelsTable)
+      .where(eq(hotelsTable.id, hotelId))
+      .limit(1);
 
-  if (!hotel[0]) {
-    res.status(404).json({ error: "Hotel not found" });
-    return;
+    if (!hotel[0]) {
+      res.status(404).json({ error: `Hotel with id ${hotelId} not found`, code: "NOT_FOUND" });
+      return;
+    }
+
+    const recentReviews = await db
+      .select()
+      .from(reviewsTable)
+      .where(eq(reviewsTable.hotelId, hotelId))
+      .orderBy(desc(reviewsTable.reviewDate))
+      .limit(50);
+
+    const newInsights = await generateInsightsForHotel(hotel[0], recentReviews);
+
+    const inserted = await db
+      .insert(insightsTable)
+      .values(newInsights)
+      .returning();
+
+    const withHotelName = inserted.map((ins) => ({
+      ...ins,
+      hotelName: hotel[0].name,
+    }));
+
+    res.json(withHotelName);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to generate insights", code: "DB_ERROR" });
+    throw err;
   }
-
-  const recentReviews = await db
-    .select()
-    .from(reviewsTable)
-    .where(eq(reviewsTable.hotelId, hotelId))
-    .orderBy(desc(reviewsTable.reviewDate))
-    .limit(50);
-
-  const newInsights = await generateInsightsForHotel(hotel[0], recentReviews);
-
-  const inserted = await db
-    .insert(insightsTable)
-    .values(newInsights)
-    .returning();
-
-  const withHotelName = inserted.map((ins) => ({
-    ...ins,
-    hotelName: hotel[0].name,
-  }));
-
-  res.json(withHotelName);
 });
 
 export default router;
