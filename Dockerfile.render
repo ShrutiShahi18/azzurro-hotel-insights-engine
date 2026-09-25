@@ -17,7 +17,8 @@ RUN pnpm --filter @workspace/hotel-insights build
 FROM nginx:alpine
 
 COPY --from=build /app/artifacts/hotel-insights/dist/public /usr/share/nginx/html
-COPY artifacts/hotel-insights/nginx.render.conf.template /etc/nginx/nginx.conf.template
+
+COPY nginx.render.conf.template /etc/nginx/nginx.conf.template
 
 EXPOSE 80
 

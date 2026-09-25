@@ -28,7 +28,7 @@ services:
     runtime: docker
     plan: free
     region: singapore
-    dockerfilePath: ./artifacts/hotel-insights/Dockerfile.render
+    dockerfilePath: ./Dockerfile.render
     dockerContext: .
     envVars:
       - key: NODE_ENV
