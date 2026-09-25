@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: azzurroiq-api
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./artifacts/api-server/Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/healthz
+    dockerCommand: /bin/sh -c "pnpm --filter @workspace/db push && node --enable-source-maps artifacts/api-server/dist/index.mjs"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: azzurroiq-db
+          property: connectionString
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: AI_INTEGRATIONS_OPENAI_API_KEY
+        sync: false
+      - key: AI_INTEGRATIONS_OPENAI_BASE_URL
+        value: https://api.openai.com/v1
+
+  - type: web
+    name: azzurroiq-frontend
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./artifacts/hotel-insights/Dockerfile.render
+    dockerContext: .
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "80"
+      - key: API_HOSTPORT
+        fromService:
+          name: azzurroiq-api
+          type: web
+          property: hostport
+
+databases:
+  - name: azzurroiq-db
+    plan: free
+    region: singapore
+    databaseName: azzurroiq
+    user: azzurro
+    postgresMajorVersion: "16"
