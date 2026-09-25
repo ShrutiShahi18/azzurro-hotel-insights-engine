@@ -8,6 +8,9 @@ COPY . .
 
 RUN pnpm install --frozen-lockfile --prod=false
 
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
 ENV NODE_ENV=production
 ENV PORT=5173
 ENV BASE_PATH=/

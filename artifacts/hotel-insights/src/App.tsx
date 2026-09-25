@@ -1,4 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { setBaseUrl } from '@workspace/api-client-react';
+
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
@@ -10,6 +12,12 @@ import Reviews from '@/pages/Reviews';
 import HotelsList from '@/pages/HotelsList';
 import HotelDetail from '@/pages/HotelDetail';
 import Insights from '@/pages/Insights';
+
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+
+if (apiBaseUrl) {
+  setBaseUrl(apiBaseUrl);
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
