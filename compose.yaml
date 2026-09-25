@@ -4,7 +4,7 @@ services:
     container_name: azzurroiq-db-compose
     environment:
       POSTGRES_USER: azzurro
-      POSTGRES_PASSWORD: REMOVED_SECRET
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: azzurroiq
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -24,7 +24,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DATABASE_URL: postgresql://azzurro:REMOVED_SECRET@db:5432/azzurroiq
+      DATABASE_URL: postgresql://azzurro:${POSTGRES_PASSWORD}@db:5432/azzurroiq
     depends_on:
       db:
         condition: service_healthy
