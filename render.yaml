@@ -35,11 +35,6 @@ services:
         value: production
       - key: PORT
         value: "80"
-      - key: API_HOSTPORT
-        fromService:
-          name: azzurroiq-api
-          type: web
-          property: hostport
 
 databases:
   - name: azzurroiq-db
