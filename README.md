@@ -366,11 +366,6 @@ After reviews are collected, `POST /api/insights/generate` feeds up to 30 review
 
 Full request/response schemas are in [`lib/api-spec/openapi.yaml`](lib/api-spec/openapi.yaml).
 
-### Public deployment
-
-- Frontend: https://azzurroiq-frontend.onrender.com
-- API health: https://azzurroiq-api.onrender.com/api/healthz
-
 ### Regenerate API types (after spec changes)
 
 ```bash
