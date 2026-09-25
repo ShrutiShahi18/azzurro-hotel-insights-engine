@@ -2,13 +2,14 @@
 
 > A full-stack operations dashboard for monitoring and analysing guest reviews across the Azzurro Hotels portfolio in Sydney.
 
+**Live demo:** https://azzurroiq-frontend.onrender.com  
+**API health:** https://azzurroiq-api.onrender.com/api/healthz
+
 ![TypeScript](https://img.shields.io/badge/TypeScript-96%25-3178C6?style=flat&logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react&logoColor=black)
 ![Express](https://img.shields.io/badge/Express-5-000000?style=flat&logo=express&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Drizzle_ORM-4169E1?style=flat&logo=postgresql&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-GPT_Insights-412991?style=flat&logo=openai&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=flat&logo=docker&logoColor=white)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-Local_Deployment-326CE5?style=flat&logo=kubernetes&logoColor=white)
 
 ---
 ## What is AzzurroIQ?
@@ -52,8 +53,6 @@ AzzurroIQ helps hotel operations teams stop reading reviews one by one. It aggre
 │   ├── api-client-react/     # Auto-generated React Query hooks (via Orval)
 │   ├── api-zod/              # Auto-generated Zod validators (via Orval)
 │   └── db/                   # Drizzle ORM schema + migration config
-├── k8s/                      # Kubernetes Deployments, Services, Secret, PVC
-├── compose.yaml              # Local Docker Compose stack
 ```
 
 The **OpenAPI spec** (`lib/api-spec/openapi.yaml`) is the contract between frontend and backend. Running `pnpm --filter @workspace/api-spec run codegen` regenerates all TypeScript types, React Query hooks, and Zod validators from the spec — any mismatch between client and server becomes a compile error, not a runtime surprise.
@@ -71,28 +70,6 @@ The **OpenAPI spec** (`lib/api-spec/openapi.yaml`) is the contract between front
 | AI | OpenAI API (GPT), rule-based fallback |
 | Monorepo | pnpm workspaces, TypeScript project references |
 | Codegen | Orval |
-| Containers | Docker, Docker Compose |
-| Orchestration | Kubernetes (Docker Desktop local cluster) |
-
-### Containerized architecture
-
-AzzurroIQ can also be run as a containerized three-tier application:
-
-```text
-                         Docker Compose / Kubernetes
-                                  │
-                 ┌────────────────┼────────────────┐
-                 │                │                │
-          Frontend + Nginx       API          PostgreSQL
-                 │                │                │
-                 │          Express 5          Drizzle ORM
-                 │                │                │
-                 └──── /api ─────┘                │
-                          │                        │
-                          └──── DATABASE_URL ─────┘
-```
-
-The frontend image uses a multi-stage build: Node.js builds the Vite application, then a lightweight Nginx image serves the generated static assets and reverse-proxies `/api/*` requests to the API service. PostgreSQL data is persisted through a named volume in Docker Compose and a `PersistentVolumeClaim` in Kubernetes.
 
 ---
 
@@ -107,14 +84,14 @@ The frontend image uses a multi-stage build: Node.js builds the Vite application
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/ShrutiShahi18/AzzurroIQ.git
-cd AzzurroIQ
+git clone https://github.com/ShrutiShahi18/azzurro-hotel-insights-engine.git
+cd azzurro-hotel-insights-engine
 pnpm install
 ```
 
 ### 2. Configure environment variables
 
-Create a `.env` file in the project root (or set these in your environment):
+Create a `.env` file in the project root (or set these in your environment). Never commit `.env` or database credentials:
 
 ```env
 # Required — PostgreSQL connection string
@@ -144,6 +121,8 @@ The four Azzurro Hotels properties are seeded automatically when the API server 
 
 ## Running the App
 
+### Local development
+
 ### Start both servers (two terminals)
 
 ```bash
@@ -158,214 +137,46 @@ The frontend proxies `/api/*` requests to the API server, so no CORS configurati
 
 ---
 
-## Running with Docker
+## Containerization & Deployment
 
-### Prerequisites
+### Docker
 
-- **Docker Desktop** with Docker Engine running
-- **Docker Compose** (included with current Docker Desktop releases)
-
-AzzurroIQ includes separate Dockerfiles for the API and frontend plus a root `compose.yaml`. The Compose stack runs three services:
-
-| Service | Container | Port / Access |
-|---|---|---|
-| Frontend | Nginx-served React app | `http://localhost:8081` |
-| API | Express 5 | `http://localhost:3000` |
-| Database | PostgreSQL 16 | Internal to Compose network |
-
-### Build the images
-
-From the project root:
+AzzurroIQ is containerized as separate services for the frontend and API. The frontend uses a multi-stage build and serves the production Vite output with Nginx. The API image bundles the Express/TypeScript server and uses the workspace PostgreSQL client at runtime.
 
 ```bash
+# Build the images
 docker build -t azzurroiq-api -f ./artifacts/api-server/Dockerfile .
-docker build -t azzurroiq-frontend -f ./artifacts/hotel-insights/Dockerfile .
-```
+docker build -t azzurroiq-frontend -f ./Dockerfile.render .
 
-The frontend uses a multi-stage Docker build so the final runtime image contains Nginx and the compiled frontend rather than the Node.js build toolchain.
-
-### Start the full stack
-
-```bash
+# Run the full local stack
 docker compose up -d
 ```
 
-Check service status:
+Docker Compose runs the frontend, API, and PostgreSQL services together and persists database data in a named volume.
 
-```bash
-docker compose ps
-```
+### Kubernetes
 
-Open the dashboard at `http://localhost:8081`. PostgreSQL is not published to the host; the API reaches it through the Compose service name `db`.
-
-### Initialize the database
-
-On a fresh database, push the Drizzle schema from the API container:
-
-```bash
-docker compose exec api pnpm --filter @workspace/db push
-```
-
-Then use the review import endpoint described below to populate the demo data.
-
-### Stop the stack
-
-```bash
-docker compose stop
-```
-
-Use `docker compose down` when you also want to remove the Compose containers and network. Keep the named PostgreSQL volume when you want the database data to persist between stack restarts.
-
----
-
-## Running with Kubernetes
-
-AzzurroIQ has been deployed locally on Kubernetes using Docker Desktop's integrated Kubernetes cluster. The deployment uses Kubernetes **Deployments**, **Services**, a **Secret**, and a **PersistentVolumeClaim**.
-
-### Kubernetes architecture
-
-```text
-Kubernetes Cluster
-│
-├── frontend Deployment
-│   └── frontend Pod
-│       └── Nginx + React static assets
-│
-├── api Deployment
-│   └── API Pod
-│       └── Express 5
-│
-├── db Deployment
-│   └── PostgreSQL Pod
-│       └── PersistentVolumeClaim
-│
-├── frontend Service ──► frontend Pod
-├── api Service ───────► API Pod
-└── db Service ────────► PostgreSQL Pod
-```
-
-### 1. Enable local Kubernetes
-
-In Docker Desktop, enable the integrated Kubernetes cluster. Verify the active context and node:
-
-```bash
-kubectl config current-context
-kubectl get nodes
-```
-
-### 2. Build the application images
-
-Build the images using the Docker commands above:
-
-```bash
-docker build -t azzurroiq-api -f ./artifacts/api-server/Dockerfile .
-docker build -t azzurroiq-frontend -f ./artifacts/hotel-insights/Dockerfile .
-```
-
-Because the local Kubernetes cluster uses the locally built images, the deployment manifests use `imagePullPolicy: Never`. Docker Desktop's integrated Kubernetes cluster may require the locally built images to be imported into its container runtime before applying the manifests.
-
-For the Docker Desktop integrated cluster, the following imports copy the locally built Linux/amd64 images into the Kubernetes container runtime:
-
-```powershell
-cmd /c "docker image save --platform linux/amd64 azzurroiq-api:latest | docker exec -i desktop-control-plane ctr --namespace=k8s.io images import -"
-cmd /c "docker image save --platform linux/amd64 azzurroiq-frontend:latest | docker exec -i desktop-control-plane ctr --namespace=k8s.io images import -"
-```
-
-Verify the images are available to Kubernetes:
-
-```powershell
-docker exec desktop-control-plane crictl images | Select-String "azzurroiq"
-```
-
-### 3. Deploy PostgreSQL, API, and frontend
-
-The Kubernetes manifests live under `k8s/`:
+The `k8s/` directory contains Kubernetes Deployments, Services, and a PostgreSQL PersistentVolumeClaim. The local Docker Desktop Kubernetes cluster was used to run the containerized stack.
 
 ```bash
 kubectl apply -f k8s/postgres.yaml
 kubectl apply -f k8s/api.yaml
 kubectl apply -f k8s/frontend.yaml
-```
-
-Verify the workloads and Services:
-
-```bash
 kubectl get pods
 kubectl get services
 ```
 
-### 4. Initialize the Kubernetes database
+Database credentials are supplied separately through a Kubernetes Secret rather than committed to the repository.
 
-The Kubernetes PostgreSQL instance has its own persistent storage, so a new cluster starts with an empty database. Push the schema from the API Pod:
+### Render
 
-```bash
-kubectl exec deployment/api -- pnpm --filter @workspace/db push
-```
+The public deployment is managed through `render.yaml` as a Render Blueprint. It provisions:
 
-Verify the tables:
+- `azzurroiq-api` — Dockerized Express API
+- `azzurroiq-frontend` — Dockerized React/Vite frontend served by Nginx
+- `azzurroiq-db` — managed PostgreSQL
 
-```bash
-kubectl exec deployment/db -- psql -U azzurro -d azzurroiq -c "\dt"
-```
-
-### 5. Seed the demo hotels
-
-The Kubernetes database is separate from the Compose database. Seed the four demo properties before importing reviews.
-
-```bash
-kubectl exec deployment/db -- psql -U azzurro -d azzurroiq -c "INSERT INTO hotels (name, slug, location, booking_url, description) VALUES ('Olympic Hotel Paddington', 'olympic-hotel-paddington', 'Paddington, Sydney', 'https://example.com/olympic-hotel-paddington', 'Heritage-style hotel in Paddington, Sydney.'), ('Venus Potts Point', 'venus-potts-point', 'Potts Point, Sydney', 'https://example.com/venus-potts-point', 'Boutique hotel in Potts Point, Sydney.'), ('Venus Surry Hills', 'venus-surry-hills', 'Surry Hills, Sydney', 'https://example.com/venus-surry-hills', 'Modern hotel in Surry Hills, Sydney.'), ('Chateau de Venus', 'chateau-de-venus', 'Darling Harbour, Sydney', 'https://example.com/chateau-de-venus', 'Luxury hotel overlooking Darling Harbour, Sydney.');"
-```
-
-### 6. Access the Kubernetes frontend locally
-
-Expose the frontend Service with port-forwarding:
-
-```bash
-kubectl port-forward service/frontend 8082:80
-```
-
-Then open `http://localhost:8082`. The frontend's Nginx configuration routes `/api/*` to the Kubernetes `api` Service, so the browser only needs the frontend URL.
-
-### 7. Seed reviews
-
-In a second terminal, forward the API Service:
-
-```bash
-kubectl port-forward service/api 3000:3000
-```
-
-Then import reviews for each hotel using the existing `/api/reviews/import` endpoint. For example, this PowerShell loop imports 50 reviews per property:
-
-```powershell
-for ($id = 1; $id -le 4; $id++) {
-    $body = @{
-        hotelId = $id
-        count   = 50
-    } | ConvertTo-Json
-
-    Invoke-RestMethod `
-        -Uri "http://localhost:3000/api/reviews/import" `
-        -Method POST `
-        -ContentType "application/json" `
-        -Body $body
-}
-```
-
-Verify the review counts:
-
-```bash
-kubectl exec deployment/db -- psql -U azzurro -d azzurroiq -c "SELECT hotel_id, COUNT(*) AS reviews FROM reviews GROUP BY hotel_id ORDER BY hotel_id;"
-```
-
-### Kubernetes resources
-
-| Resource | Purpose |
-|---|---|
-| Deployment | Maintains the desired frontend, API, and PostgreSQL Pods |
-| Service | Stable DNS/network endpoint for each application component |
-| Secret | Stores database credentials and the application `DATABASE_URL` |
-| PersistentVolumeClaim | Persists PostgreSQL data outside the Pod lifecycle |
-| `imagePullPolicy: Never` | Tells Kubernetes to use the preloaded local application images |
+The deployed demo is populated with the four hotel properties and 400 synthetic reviews. The frontend calls the public API directly; the API connects to Render PostgreSQL through its managed connection string. OpenAI is optional because the insight engine falls back to deterministic rule-based generation when an API key is not configured.
 
 ---
 
@@ -379,7 +190,7 @@ AzzurroIQ uses a **server-side review generator** that simulates a review collec
 # Replace hotelId with 1, 2, 3, or 4
 curl -X POST http://localhost:8080/api/reviews/import \
   -H "Content-Type: application/json" \
-  -d '{"hotelId": 1, "count": 80}'
+  -d '{"hotelId": 1, "count": 100}'
 ```
 
 | Hotel | ID |
@@ -552,6 +363,11 @@ After reviews are collected, `POST /api/insights/generate` feeds up to 30 review
 
 Full request/response schemas are in [`lib/api-spec/openapi.yaml`](lib/api-spec/openapi.yaml).
 
+### Public deployment
+
+- Frontend: https://azzurroiq-frontend.onrender.com
+- API health: https://azzurroiq-api.onrender.com/api/healthz
+
 ### Regenerate API types (after spec changes)
 
 ```bash
@@ -566,7 +382,7 @@ pnpm run typecheck:libs
 ### Review data
 
 - **Synthetic, not scraped** — All reviews are procedurally generated. They model realistic patterns but are not real guest reviews from Booking.com, TripAdvisor, or Google.
-- **Fixed comment pools** — Each hotel has a small set of ~7–8 template comments per sentiment tier. With 80 reviews per hotel, comments repeat. A production system would need a much larger corpus or live scraping via a legitimate data partner API.
+- **Fixed comment pools** — Each hotel has a small set of ~7–8 template comments per sentiment tier. With 100 reviews per hotel, comments repeat. A production system would need a much larger corpus or live scraping via a legitimate data partner API.
 - **No multilingual reviews** — All reviews are in English. Real hotel portfolios receive reviews in dozens of languages.
 - **Sentiment is pre-assigned** — Sentiment labels are set at generation time based on the rating band, not derived from NLP analysis of the review text. A production pipeline would run each review through a sentiment classifier.
 - **No deduplication across re-runs** — The `externalId` unique constraint prevents inserting the same review twice only within a single import batch. Running the import multiple times for the same hotel will still add new rows (with new timestamps in their IDs).
@@ -576,11 +392,6 @@ pnpm run typecheck:libs
 - **Context window limit** — Only the most recent 30 reviews are sent to GPT. For hotels with hundreds of reviews, older feedback is excluded from AI analysis.
 - **Model availability** — Insight generation depends on an active OpenAI API key. Without one, the rule-based fallback produces structurally correct but less nuanced insights.
 - **No historical insight storage** — Each call to `/api/insights/generate` replaces existing insights for that hotel. There is no insight versioning or history.
-
-### Deployment
-
-- **Local Kubernetes deployment** — The Kubernetes manifests are designed and tested against Docker Desktop's local Kubernetes cluster. This demonstrates container orchestration locally; it is not a claim of deployment to a managed cloud Kubernetes service such as AKS, EKS, or GKE.
-- **No production ingress/TLS setup** — The local Kubernetes deployment uses `kubectl port-forward` for browser access rather than a public Ingress, load balancer, or TLS termination layer.
 
 ### Architecture
 
