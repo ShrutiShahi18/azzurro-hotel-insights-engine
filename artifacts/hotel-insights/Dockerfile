@@ -18,8 +18,9 @@ RUN pnpm --filter @workspace/hotel-insights build
 FROM nginx:alpine
 
 COPY --from=build /app/artifacts/hotel-insights/dist/public /usr/share/nginx/html
-COPY artifacts/hotel-insights/nginx.conf /etc/nginx/conf.d/default.conf
+
+COPY artifacts/hotel-insights/nginx.render.conf.template /etc/nginx/nginx.conf.template
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/bin/sh", "-c", "envsubst '$API_HOSTPORT' < /etc/nginx/nginx.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
