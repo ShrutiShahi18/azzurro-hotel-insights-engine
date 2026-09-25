@@ -35,7 +35,6 @@ export default function Reviews() {
   const { data: reviewPage, isLoading, isFetching } = useListReviews(queryParams, {
     query: { 
       queryKey: getListReviewsQueryKey(queryParams),
-      keepPreviousData: true
     }
   });
 
