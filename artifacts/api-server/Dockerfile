@@ -16,13 +16,10 @@ RUN pnpm install --frozen-lockfile --prod=false --filter @workspace/api-server..
 COPY artifacts/api-server artifacts/api-server
 COPY lib lib
 
-RUN pnpm install --frozen-lockfile --prod=false --filter @workspace/api-server...
-
 RUN pnpm --filter @workspace/api-server build
 
 ENV NODE_ENV=production
-ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["node", "--enable-source-maps", "artifacts/api-server/dist/index.mjs"]
+CMD ["/bin/sh", "-c", "pnpm --filter @workspace/db push && exec node --enable-source-maps artifacts/api-server/dist/index.mjs"]
